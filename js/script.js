@@ -47,14 +47,16 @@ function getListTeams() {
 
 function DetailTeam(id) {
     title.innerHTML = "DETAIL TEAM";
-    let url = baseUrl + "teams/" + id
+    let infoEndpoin = baseUrl + "teams/" + id
 
-    fetch(url, fetchHeader)
+    fetch(infoEndpoin, fetchHeader)
         .then(response => response.json())
         .then(resJson => {
             console.log(resJson.squad)
-            let teams = "";
-            let i = 1;
+            let sqd = "";
+            let rwt = ""
+            let a = 1;
+            let b = 1;
             let Gambar = resJson.crestUrl;
             let Nama = resJson.name;
             let nama_pendek = resJson.shortName;
@@ -63,10 +65,23 @@ function DetailTeam(id) {
             let Email = resJson.email;
             let berdiri = resJson.founded;
             let std = resJson.venue;
-            resJson.squad.forEach(data => {
-                teams += `
+            resJson.activeCompetitions.forEach(riwayat => {
+                rwt += `
                 <tr>
-                    <td style="padding-left:20px;">${i}.</td>
+                    <td style="padding-left:20px;">${a}.</td>
+                    <td>${riwayat.id}</td>
+                    <td>${riwayat.area.name}</td>
+                    <td>${riwayat.name}</td>
+                    <td>${riwayat.code}</td>
+                    <td>${riwayat.plan}</td>
+                </tr>
+                `;
+                a++;
+            })
+            resJson.squad.forEach(data => {
+                sqd += `
+                <tr>
+                    <td style="padding-left:20px;">${b}.</td>
                     <td>${data.name}</td>
                     <td>${data.position}</td>
                     <td>${data.dateOfBirth}</td>
@@ -76,7 +91,7 @@ function DetailTeam(id) {
                     <td>${data.role}</td>
                 </tr>
                 `;
-                i++;
+                b++;
             })
             contents.innerHTML = `
                 <div class="card">
@@ -95,11 +110,27 @@ function DetailTeam(id) {
                         </div>
                     </div>
                 </div>
+                <h5>AKTIFITAS KOMPETISI</h5>
+                <div class="card">
+                    <table class="centered responsive-table">
+                        <thead>
+                            <th>No.</th>
+                            <th>Tahun</th>
+                            <th>Tempat</th>
+                            <th>Nama Liga</th>
+                            <th>Code</th>
+                            <th>Liga</th>
+                        </thead>
+                        <tbody>
+                            ${rwt}
+                        </tbody>
+                    </table>
+                </div>
                 <h5>DAFTAR PEMAIN</h5>
                 <div class="card">
                     <table class="centered responsive-table">
                         <thead>
-                            <th></th>
+                            <th>No.</th>
                             <th>Nama Pemain</th>
                             <th>Posisi</th>
                             <th>Tanggal Lahir</th>
@@ -109,7 +140,7 @@ function DetailTeam(id) {
                             <th>Role</th>
                         </thead>
                         <tbody>
-                            ${teams}
+                            ${sqd}
                         </tbody>
                     </table>
                 </div>
@@ -219,8 +250,6 @@ function loadPage(page) {
         case "matches":
             getListMatches();
             break;
-        // case "teams":
-        //     getDetailTeam(id);
     }
 }
 
